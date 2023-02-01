@@ -196,15 +196,6 @@ function get_widgets(SETTINGS) {
         ]
       }
     ),
-    "refine_previousplayers": panel('Previous players')(instantsearch.widgets.refinementList)(
-      {
-        container: '#facet-previous-players',
-        attribute: 'previous_players',
-        operator: 'and',
-        searchable: true,
-        showMore: true,
-      }
-    ),
     "refine_numplays": panel('Total plays')(instantsearch.widgets.numericMenu)(
       {
         container: '#facet-numplays',
@@ -223,7 +214,6 @@ function get_widgets(SETTINGS) {
     "hits": instantsearch.widgets.hits({
       container: '#hits',
       transformItems: function(items) {
-        hide_facet_when_no_data('#facet-previous-players', items, 'previous_players');
         hide_facet_when_no_data('#facet-numplays', items, 'numplays');
 
         return items.map(function(game){
@@ -337,7 +327,6 @@ function init(SETTINGS) {
     widgets["hits"],
     widgets["stats"],
     widgets["pagination"],
-    widgets["refine_previousplayers"],
     widgets["refine_numplays"]
   ]);
 
