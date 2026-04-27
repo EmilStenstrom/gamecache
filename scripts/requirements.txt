@@ -10,7 +10,7 @@ cffi==2.0.0
     # via
     #   cryptography
     #   pynacl
-cryptography==46.0.7
+cryptography==47.0.0
     # via -r requirements.in
 declxml==1.1.3
     # via -r requirements.in
