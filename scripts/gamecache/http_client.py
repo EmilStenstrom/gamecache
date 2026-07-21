@@ -280,13 +280,19 @@ class CachedHttpClient:
             status_code = 200  # make_http_request only returns data on success
             response_headers = {}  # Simple implementation doesn't capture response headers
 
-            # Store in cache
-            cursor.execute("""
-                INSERT OR REPLACE INTO http_cache
-                (url_hash, url, response_data, headers, status_code, timestamp)
-                VALUES (?, ?, ?, ?, ?, ?)
-            """, (url_hash, full_url, response_data, json.dumps(response_headers), status_code, time_module.time()))
-            conn.commit()
+            # BGG returns this transient message (HTTP 202) while it prepares a collection
+            # export asynchronously. It must never be cached, or every retry - and every run
+            # for the next `expire_after` seconds - would just replay "try again" forever
+            # instead of re-checking BGG for the real data.
+            is_transient_bgg_message = b"has been accepted and will be processed" in response_data
+
+            if not is_transient_bgg_message:
+                cursor.execute("""
+                    INSERT OR REPLACE INTO http_cache
+                    (url_hash, url, response_data, headers, status_code, timestamp)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                """, (url_hash, full_url, response_data, json.dumps(response_headers), status_code, time_module.time()))
+                conn.commit()
 
         except Exception as e:
             conn.close()
