@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements.in
 #
-certifi==2026.7.22
+certifi==2026.10.23
     # via -r requirements.in
 cffi==2.0.0
     # via
